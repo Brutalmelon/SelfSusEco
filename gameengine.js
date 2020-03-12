@@ -57,6 +57,53 @@ GameEngine.prototype.start = function () {
     })();
 }
 
+
+GameEngine.prototype.save = function() {
+    let saveState = {};
+    saveState.entities = [];
+    this.entities.forEach(ent => {
+        saveState.entities.push(this.saveCir(ent));
+    });
+    console.log("I dunnit");
+    return { studentname:"Korey Pecha", statename:"aState", data:saveState};
+}
+
+
+
+GameEngine.prototype.load = function(saveState) {
+    this.entities = [];
+
+    saveState.entities.forEach(ent => {
+        let Cir = new Circle(this);
+        Cir.it = ent.it;
+        Cir.color = ent.color;
+        Cir.radius = ent.radius;
+        Cir.visualRadius = ent.visualRadius;
+        Cir.life = ent.life;
+        Cir.x = ent.x;
+        Cir.y = ent.y;
+        Cir.velocity = ent.velocity;
+        this.addEntity(Cir);
+    });
+
+
+}
+
+
+GameEngine.prototype.saveCir = function(ent) {
+    let state = {};
+    state.it = ent.it;
+    state.color = ent.color;
+    state.radius = ent.radius;
+    state.visualRadius = ent.visualRadius;
+    state.life = ent.life;
+    state.x = ent.x;
+    state.y = ent.y;
+    state.velocity = ent.velocity;
+    return state;
+
+}
+
 GameEngine.prototype.startInput = function () {
     console.log('Starting input');
     var that = this;
@@ -91,11 +138,11 @@ GameEngine.prototype.startInput = function () {
         e.preventDefault();
     }, false);
 
-    console.log('Input started');
+    //console.log('Input started');
 }
 
 GameEngine.prototype.addEntity = function (entity) {
-    console.log('added entity');
+    //console.log('added entity');
     this.entities.push(entity);
 }
 
@@ -171,3 +218,5 @@ Entity.prototype.rotateAndCache = function (image, angle) {
     //offscreenCtx.strokeRect(0,0,size,size);
     return offscreenCanvas;
 }
+
+

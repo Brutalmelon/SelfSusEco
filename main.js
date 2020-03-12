@@ -1,3 +1,4 @@
+const socket = io.connect("http://24.16.255.56:8888");
 
 // GameBoard code below
 
@@ -11,8 +12,6 @@ function Circle(game) {
     this.player = 1;
     this.radius = 5;
     this.visualRadius = 500;
-    //this.colors = ["ff0000", "Green", "Blue"];
-    //this.melee();
     Entity.call(this, game, this.radius + Math.random() * (800 - this.radius * 2), this.radius + Math.random() * (800 - this.radius * 2));
 
     this.velocity = { x: Math.random() * 1000, y: Math.random() * 1000 };
@@ -215,9 +214,37 @@ ASSET_MANAGER.queueDownload("./img/black.png");
 ASSET_MANAGER.queueDownload("./img/white.png");
 
 ASSET_MANAGER.downloadAll(function () {
-    //console.log("starting up da sheild");
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
+    let saveButton = document.getElementById("save");
+    let loadButton = document.getElementById("load");
+
+    saveButton.onclick = function (e) {
+        console.log('save pressed');
+        let message = gameEngine.save();
+        // console.log(message);
+        socket.emit("save", message);
+    };
+    loadButton.onclick = function (e) {
+        console.log('load pressed');
+        console.log(socket);
+        socket.emit("load", {studentname:"Korey Pecha", statename:"aState"});
+    };
+    socket.on("load", function(data) {
+        console.log(data);
+        let saveState = data.data;
+        gameEngine.load(saveState);
+    });
+    socket.on("connect", function () {
+        console.log("Socket connected.")
+    });
+    socket.on("disconnect", function () {
+        console.log("Socket disconnected.")
+    });
+    socket.on("reconnect", function () {
+        console.log("Socket reconnected.")
+    });
+
     var gameEngine = new GameEngine();
 
     for( var i = 0; i < 150; i++){
